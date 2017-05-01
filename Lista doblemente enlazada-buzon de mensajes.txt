@@ -1,0 +1,131 @@
+/*Jesús Arnoldo Zerecero Núñez
+Universidad Autónoma de Guadalajara
+"Ejemplo de lista doblemente enlazada: Buzón de mensajes"*/
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+struct Buzon{
+char envia[10];
+char recibe[10];
+char mensaje[50];
+struct Buzon *sig, *ant;
+};
+
+typedef struct Buzon Buzon;
+
+Buzon **ppio,**final;
+
+void pedirdatos(void);
+void insertar(Buzon *,Buzon **,Buzon **);
+void mostrartodo(void);
+
+
+void main(void){
+int cont;
+
+clrscr();
+for(cont=0;cont<3;cont++)
+{
+pedirdatos();
+printf("\n\n");
+mostrartodo();
+}
+getch();
+return;
+
+}
+
+
+void pedirdatos(){
+
+Buzon *var;
+int cont;
+
+var=(Buzon *)malloc(sizeof(Buzon)); //asinga espacio memoria
+printf("\nInserte numero de celular que envia\n"); //pide los datos
+gets(var->envia);        
+printf("\nInserte numero de celular que recibe\n");   
+gets(var->recibe);     
+printf("\nInserte mensaje\n");   
+gets(var->mensaje);      
+insertar(var,&ppio,&final);        //manda insertar los datos
+
+
+
+}
+
+void insertar(Buzon *i,Buzon **ppio,Buzon **final){
+struct Buzon *aux,*ant;
+
+if(!*final){                  //si no existe nada en lista
+i->sig=NULL;
+*final=i;
+*ppio=i;
+i->ant=NULL;
+return;
+
+
+}
+
+if(strcmp(i->envia,(*ppio)->envia)<0)      //si es menor al primel elemento
+{i->sig=*ppio;
+i->ant=NULL;
+if(final==ppio)
+(*ppio)->sig=final;
+(*ppio)->ant=i;
+
+*ppio=i;
+
+return;
+}
+
+if(strcmp(i->envia,(*final)->envia)>0) //si va al final de la lista
+{i->sig=NULL;
+i->ant=*final;
+(*final)->sig=i;
+if(final==ppio)
+(*ppio)->sig=*final;
+(*ppio)->ant=NULL;
+*final=i;
+return;
+}
+
+ant=*ppio;
+aux=(*ppio)->sig;
+
+do{                              //Busca en posicion central va
+
+if(strcmp(i->envia,aux->envia)<=0){  //verifica si es menor al siguiente elemento de la posicion actual
+i->sig=aux;
+ant->sig=i;
+return;
+}
+else{ ant=aux; //si no se recorre al siguiente elemento
+aux=aux->sig;
+}
+
+}while(ant!=*final);
+
+
+}
+
+void mostrartodo(){
+Buzon *p;  
+int x=1;                  //muestra toda la lista
+p=ppio;
+printf("BUZON DE MENSAJES");
+while(p)
+{
+printf("\n\n%i-\n", x);
+printf("Numero que envia:");
+puts(p->envia);
+printf("Numero que recibe:");
+puts(p->recibe);
+printf("Mensaje:");
+puts(p->mensaje);
+p=p->sig;
+x++;
+}
+
+}
